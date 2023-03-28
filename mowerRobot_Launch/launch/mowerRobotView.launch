@@ -1,0 +1,13 @@
+<!--
+  Used for visualising rplidar in action.  
+  
+  It requires rplidar.launch.
+ -->
+<launch>
+  <include file="$(find rplidar_ros)/launch/rplidar_s2.launch" />
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find rplidar_ros)/rviz/rplidar.rviz" />
+
+  <node name = "imu" pkg="sparkfun_VR_IMU" type = "serial_uart_rvc_ros.py" /> 
+  
+</launch>
