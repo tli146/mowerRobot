@@ -9,5 +9,6 @@
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find rplidar_ros)/rviz/rplidar.rviz" />
 
   <node name = "imu" pkg="sparkfun_VR_IMU" type = "serial_uart_rvc_ros.py" /> 
-  
+
+  <node name = "imu_to_odom" pkg = "imu_to_odom" type = "imu_to_odom_node" />
 </launch>
