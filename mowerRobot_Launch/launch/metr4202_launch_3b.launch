@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<launch>
+    <!-- state manager -->
+    <node name ="state_manager" pkg = "metr4202_topics" type = "state.py"/>
+
+    
+    <!-- camera-->
+    <arg name="serial" default="31706251"/>
+    <include file="$(find aruco_detect)/launch/aruco_detect.launch">
+        <arg name="camera" value="/ximea_ros/ximea_$(arg serial)"/>
+        <arg name="fiducial_len" value="0.028"/>
+        <arg name="image" value="/image_raw"/>
+        <arg name="dictionary" value="0"/>
+    </include>
+
+    <node name ="ximea_camera_main" pkg = "ximea_ros" type = "ximea_camera"/>
+    <node name = "ximea_camera_color" pkg = "ximea_color" type = "camera.py" />
+    <node name = "videoUI" pkg = "rqt_image_view" type = "rqt_image_view" />
+    <node name = "detect_block" pkg = "metr4202_transforms" type = "detect_block.py" />
+    <node name = "color_camera" pkg = "ximea_color" type = "camera.py"/>
+    <node name = "color_detect" pkg = "ximea_color" type  = "ximea_color_detect" />
+
+    <!--kinematics --> 
+    <include file = "$(find dynamixel_interface)/launch/dynamixel_interface_controller.launch"/>
+    <node name = "joint_states_publisher_inverse" pkg = "metr4202_kinematics" type = "joint_states_3b.py"/>
+    <node name = "state_publisher" pkg = "metr4202_topics" type = "state.py"/>
+    <node name = "gripper_set" pkg = "metr4202_gripper" type = "gripper_driver.py"/>
+
+
+
+</launch>

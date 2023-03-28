@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name> metr4202_launch </name>
+  <version> 0.0.1 </version>
+  <description> Launch file for metr4202 robot </description>
+  <maintainer email="tli146@hotmail.com">Tony Li</maintainer>
+
+  <license> Apache 2.0 </license>
+
+  <author> Tony Li</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>ximea_ros</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_export_depend>message_runtime</build_export_depend>
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>ximea_ros</exec_depend>
+</package>
