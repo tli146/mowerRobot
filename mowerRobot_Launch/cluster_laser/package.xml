@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name> cluster_laser </name>
+  <version> 0.0.1 </version>
+  <description>cluster lidar scans into list of cone/trees relative to robot</description>
+  <maintainer email="tli146@hotmail.com">Tony Li</maintainer>
+
+  <license> Apache 2.0 </license>
+
+  <author> Tony Li</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>sensor_msgs</depend>
+  <exec_depend>message_runtime</exec_depend>
+</package>
