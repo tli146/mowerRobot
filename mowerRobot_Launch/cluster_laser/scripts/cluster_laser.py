@@ -97,6 +97,9 @@ class obstacleList:
             obstacle_index = obstacle_index - 1
             obstacle_list.pop(obstacle_index)
 
+        #for debug    
+        print(obstacle_index)
+
     def filter_bollards(self, obstacle_list):
         None
 
