@@ -10,8 +10,10 @@ from scipy.spatial.transform import Rotation as R
 import numpy as np
 import modern_robotics as mr
 
-from sensor_msgs import LaserScan
-from std_msgs.msg import Header, String, Int16, Bool, Float32
+from sensor_msgs import LaserScan, PointCloud
+from geometry_msgs import Point, Point32, Pose, Quaternion
+from std_msgs.msg import Header, String, Int16, Bool, Float32, ColorRGBA
+from visualization_msgs import  Marker
 
 #constants
 
@@ -87,10 +89,11 @@ class obstacleList:
                         obstacle_list.append(obstacle((x,y)))
                         obstacle_index = obstacle_index + 1
 
-                new_obj = false
+                new_obj = False
             else:
                 obstacle_list[obstacle_index].finalise()
-                new_obj = true
+                new_obj = True
+            currentAngle = currentAngle + angle_increment
 
         #connect front and back(if connecting)
         if obstacle_list[1].mergeFrom(obstacle_list[obstacle_index -1]):
@@ -100,8 +103,17 @@ class obstacleList:
         #for debug    
         print(obstacle_index)
 
-    def filter_bollards(self, obstacle_list):
-        None
+
+
+    def filter_bollards(self):
+        bollard_list = []
+        for obstacle in self.obstacle_list:
+            if obstacle.length < diameter_max and obstacle.length > diameter_min:
+                bollard_list.append(obstacle)
+                obstacle.type = 1
+        return bollard_list
+    
+
 
 
 
@@ -128,6 +140,8 @@ class obstacle:
         self.locations_y.append(y)
         self.x = x
         self.y = y
+        self.type = 0
+
 
     def newScan(self, x, y):
         self.size = self.size + 1
@@ -154,28 +168,80 @@ class obstacle:
             self.y = sum(self.locations_y) / len(self.locations_y)
             return True
         
+    def to_point_32(self):
+        point = Point32()
+        point.x = self.x
+        point.y = self.y
+        point.z = self.length
+        return point
+    
+    def to_point(self):
+        point = Point()
+        point.x = self.x
+        point.y = self.y
+        point.z = self.length
+        return point
+    
+    
+        
 
 
 
 
 class processor:
 #class of detected obstacles and bollards
-    def detection_callback(self, LaserScan: laserScan):
-        #sync update on receiving new transform information
-        self.laserScan = laserScan
+    def detection_callback(self, LaserScan):
+        #synchronous update on receiving new transform information
+        self.laserScan = LaserScan
         obstacleList = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
+        bollard_list = obstacleList.filter_bollards()
 
-    
+
+    def publish_markers(self, obstacle_list):
+        point_list = []
+        color_list = []
+        for obstacle in obstacle_list:
+            point_list.append(obstacle.to_point())
+            if(obstacle.type == 0):
+                color_list.append(ColorRGBA(1.0,0.0,0.0,1.0))
+            else:
+                color_list.append(ColorRGBA(0.0,1.0,0.0,1.0))
+        marker = Marker()
+        marker.type = 8 #points type
+        marker.points = point_list
+        marker.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
+        marker.colors = color_list
+        self.publish_obstacle_visual(marker)
+
 
     def __init__(self):
 
 
         self.sub_laserScan= rospy.Subscriber(
             #subscribe to lidar output
-        "LaserScan",
-        laserScan,
-        self.detection_callback       
+            "LaserScan",
+            LaserScan,
+            self.detection_callback       
         )
+
+        self.publish_obstacles = rospy.Publisher(
+            #publishes list of all obstacles. z value is length
+            'obstacle_list',
+            PointCloud
+        )
+
+        self.publish_bollards = rospy.Publisher(
+            #publishes list of all bollards. z value is length
+            'bollards_list',
+            PointCloud
+        )
+
+        self.publish_obstacle_visual = rospy.Publisher(
+            #published list of markers for rviz
+            'obstacle_list_rviz',
+            Marker
+        )
+
 
 
     
