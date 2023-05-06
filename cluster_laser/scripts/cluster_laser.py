@@ -9,10 +9,10 @@ import heapq
 from scipy.spatial.transform import Rotation as R
 import numpy as np
 
-from sensor_msgs import LaserScan, PointCloud
-from geometry_msgs import Point, Point32, Pose, Quaternion
+from sensor_msgs.msg import LaserScan, PointCloud
+from geometry_msgs.msg import Point, Point32, Pose, Quaternion
 from std_msgs.msg import Header, String, Int16, Bool, Float32, ColorRGBA
-from visualization_msgs import  Marker
+from visualization_msgs.msg import  Marker
 
 #constants
 
