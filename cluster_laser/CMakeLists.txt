@@ -7,12 +7,14 @@ find_package(catkin REQUIRED COMPONENTS
    rospy
    std_msgs
    sensor_msgs
+   geometry_msgs
+   visualization_msgs
 
    
 )
 project( cluster_laser )
 catkin_package(
-  CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs geometry_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs geometry_msgs visualization_msgs
 )
 
 catkin_install_python(PROGRAMS scripts/cluster_laser.py
