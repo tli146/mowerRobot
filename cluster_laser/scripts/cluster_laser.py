@@ -190,8 +190,9 @@ class processor:
     def detection_callback(self, LaserScan):
         #synchronous update on receiving new transform information
         self.laserScan = LaserScan
-        obstacleList = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
-        bollard_list = obstacleList.filter_bollards()
+        obstacle_list = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
+        bollard_list = obstacle_list.filter_bollards()
+        self.publish_markers(obstacle_list)
 
 
     def publish_markers(self, obstacle_list):
