@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 project( metr4202_transforms )
 catkin_package(
-  CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs geometry_msgs
 )
 
 catkin_install_python(PROGRAMS scripts/cluster_laser.py
