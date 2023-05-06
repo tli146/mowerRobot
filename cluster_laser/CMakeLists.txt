@@ -10,7 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
 
    
 )
-project( metr4202_transforms )
+project( cluster_laser )
 catkin_package(
   CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs geometry_msgs
 )

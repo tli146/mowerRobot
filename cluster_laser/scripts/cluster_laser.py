@@ -8,7 +8,6 @@ import math
 import heapq
 from scipy.spatial.transform import Rotation as R
 import numpy as np
-import modern_robotics as mr
 
 from sensor_msgs import LaserScan, PointCloud
 from geometry_msgs import Point, Point32, Pose, Quaternion

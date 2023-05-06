@@ -1,0 +1,8 @@
+
+
+<launch>
+
+    <node name="cluster_laser" pkg="cluster_laser" type="cluster_laser.py" />
+
+
+</launch>
