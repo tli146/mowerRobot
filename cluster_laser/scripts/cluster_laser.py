@@ -2,16 +2,14 @@
 
 #this class will take in lidar msgs and return: list of tree matching obstacles and whether there is an obstacle within collision distance of the robot
 
-from select import select
 import rospy
-import math
-import heapq
-from scipy.spatial.transform import Rotation as R
+
+
 import numpy as np
 
 from sensor_msgs.msg import LaserScan, PointCloud
 from geometry_msgs.msg import Point, Point32, Pose, Quaternion
-from std_msgs.msg import Header, String, Int16, Bool, Float32, ColorRGBA
+from std_msgs.msg import ColorRGBA
 from visualization_msgs.msg import  Marker
 
 #constants
@@ -218,7 +216,7 @@ class processor:
 
         self.sub_laserScan= rospy.Subscriber(
             #subscribe to lidar output
-            "LaserScan",
+            "scan",
             LaserScan,
             self.detection_callback       
         )
