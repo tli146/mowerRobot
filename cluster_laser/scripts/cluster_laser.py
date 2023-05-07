@@ -14,6 +14,10 @@ from visualization_msgs.msg import  Marker
 
 #constants
 
+#testing mode
+#only runs algorithm once for testing and outputs objects
+testing_mode = True
+
 #ros constants
 ros_rate = 5
 
@@ -54,51 +58,80 @@ class obstacleList:
         y_last = y_last_obj
         new_obj = True
 
-        obstacle_list = []
-        obstacle_index = 0
+        self.obstacle_list = []
+        obstacle_list = self.obstacle_list
+        obstacle_index = -1
         for laser in ranges:
+
+            #print(currentAngle)
+            #print(obstacle_index)
+
             if(laser > range_min and laser < range_max):
                 
+                #print("laser okay")
+                
+
                 x = laser* np.sin(currentAngle)
                 y = laser* np.cos(currentAngle)
 
+                #print("x:", x," y: ", y)
+
                 if(new_obj):
-                    
-                    obstacle_list.append(obstacle((x,y)))
+
+                    #print("new obj")
                     obstacle_index = obstacle_index + 1
+                    obstacle_list.append(obstacle(x,y))
+                    x_last_obj = x
+                    y_last_obj = y
+                    
 
                 else:
+                    
+                    #print("checking previous obj for proximity")
+                    
 
-                    dis_from_last = np.sqrt((x-x_last)^2+(y-y_last)^2)
-                    dis_from_last_obj = np.sqrt((x-x_last_obj)^2+(y-y_last_obj)^2)
+                    dis_from_last = np.sqrt(np.square(x-x_last)+np.square(y-y_last))
+                    dis_from_last_obj = np.sqrt(np.square(x-x_last_obj)+np.square(y-y_last_obj))
                     linear_scaled_obj_min_length = (0.7+ (laser/15)*0.8)* obj_link_min_length_wo_distance_adjust
                     #scale by resolution at distance
 
+                    #print("dist to last scan:", dis_from_last, " linear_scaled_obj_min_length:", linear_scaled_obj_min_length)
+                    #print("dist to last obj start:", dis_from_last_obj, " wall max length:", wallLength_max )
                     if(dis_from_last < linear_scaled_obj_min_length and dis_from_last_obj < wallLength_max):
+                        
+                        #print("attaching to previous obj")
 
                         obstacle_list[obstacle_index].newScan(x, y)
 
 
                     else:
-
+                        
+                        #print("new scan not linked to previous obj. Building new obj")
+                        
                         obstacle_list[obstacle_index].finalise()
-
-                        obstacle_list.append(obstacle((x,y)))
                         obstacle_index = obstacle_index + 1
+                        obstacle_list.append(obstacle(x,y))
+                        x_last_obj = x
+                        y_last_obj = y
+                        
 
                 new_obj = False
+                x_last = x
+                y_last = y
             else:
-                obstacle_list[obstacle_index].finalise()
+
+                #print("laser not in range. Next okay scan will be new obj")
+
+                if(obstacle_index != 0):
+                    obstacle_list[obstacle_index].finalise()
                 new_obj = True
             currentAngle = currentAngle + angle_increment
 
         #connect front and back(if connecting)
-        if obstacle_list[1].mergeFrom(obstacle_list[obstacle_index -1]):
+        if obstacle_list[0].mergeFrom(obstacle_list[obstacle_index]):
             obstacle_index = obstacle_index - 1
             obstacle_list.pop(obstacle_index)
 
-        #for debug    
-        print(obstacle_index)
 
 
 
@@ -149,12 +182,12 @@ class obstacle:
         #find average location
         self.x = sum(self.locations_x) / len(self.locations_x)
         self.y = sum(self.locations_y) / len(self.locations_y)
-        self.length = np.sqrt((max(self.locations_x) - min(self.locations_x))^2 + (max(self.locations_y) - min(self.locations_y))^2)
+        self.length = np.sqrt(np.square(max(self.locations_x) - min(self.locations_x)) + np.square(max(self.locations_y) - min(self.locations_y)))
 
     def mergeFrom(self, obstacle):
         merged_x = self.locations_x + obstacle.locations_x
         merged_y = self.locations_y + obstacle.locations_y
-        new_length = np.sqrt((max(merged_x) - min(merged_x))^2 + (max(merged_y) - min(merged_y))^2)
+        new_length = np.sqrt(np.square(max(merged_x) - min(merged_x)) + np.square(max(merged_y) - min(merged_y)))
         if new_length > wallLength_max:
             return False
         else:
@@ -187,18 +220,36 @@ class obstacle:
 
 class processor:
 #class of detected obstacles and bollards
+
     def detection_callback(self, LaserScan):
-        #synchronous update on receiving new transform information
-        self.laserScan = LaserScan
-        obstacle_list = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
-        bollard_list = obstacle_list.filter_bollards()
-        self.publish_markers(obstacle_list)
+        if testing_mode:
+            
+            if self.active:
+                print("testing mode")
+                self.active = False
+                self.laserScan = LaserScan
+                self.obstacle_list = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
+                
+                bollard_list = self.obstacle_list.filter_bollards()
+
+                print(len(self.obstacle_list.obstacle_list))
+
+                self.publish_markers(self.obstacle_list)
+                
+
+            return
+        else:
+            #synchronous update on receiving new transform information
+            self.laserScan = LaserScan
+            self.obstacle_list = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
+            bollard_list = self.obstacle_list.filter_bollards()
+            self.publish_markers(self.obstacle_list)
 
 
     def publish_markers(self, obstacle_list):
         point_list = []
         color_list = []
-        for obstacle in obstacle_list:
+        for obstacle in obstacle_list.obstacle_list:
             point_list.append(obstacle.to_point())
             if(obstacle.type == 0):
                 color_list.append(ColorRGBA(1.0,0.0,0.0,1.0))
@@ -209,11 +260,11 @@ class processor:
         marker.points = point_list
         marker.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
         marker.colors = color_list
-        self.publish_obstacle_visual(marker)
+        self.publish_obstacle_visual.publish(marker)
 
 
     def __init__(self):
-
+        self.active = True
 
         self.sub_laserScan= rospy.Subscriber(
             #subscribe to lidar output

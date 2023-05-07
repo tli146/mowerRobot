@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(mowerRobot)
+project(mowerRobot_Launch)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -13,6 +13,4 @@ find_package(catkin REQUIRED COMPONENTS
   tf
 )
 
-find_package(cartographer REQUIRED)
-include("${CARTOGRAPHER_CMAKE_DIR}/functions.cmake")
 

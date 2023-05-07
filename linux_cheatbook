@@ -1,0 +1,5 @@
+to resource ros packages:
+
+    source ~/MowerRobot/devel/setup.bash
+
+

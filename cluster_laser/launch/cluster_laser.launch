@@ -2,7 +2,7 @@
 
 <launch>
 
-    <node name="cluster_laser" pkg="cluster_laser" type="cluster_laser.py" />
+    <node name="cluster_laser" pkg="cluster_laser" type="cluster_laser.py" output="screen" />
 
 
 </launch>
