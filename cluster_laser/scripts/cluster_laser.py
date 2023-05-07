@@ -16,7 +16,7 @@ from visualization_msgs.msg import  Marker
 
 #testing mode
 #only runs algorithm once for testing and outputs objects
-testing_mode = True
+testing_mode = False
 
 #ros constants
 ros_rate = 5
@@ -71,8 +71,8 @@ class obstacleList:
                 #print("laser okay")
                 
 
-                x = laser* np.sin(currentAngle)
-                y = laser* np.cos(currentAngle)
+                x = laser* np.cos(currentAngle)
+                y = laser* np.sin(currentAngle)
 
                 #print("x:", x," y: ", y)
 
@@ -122,7 +122,7 @@ class obstacleList:
 
                 #print("laser not in range. Next okay scan will be new obj")
 
-                if(obstacle_index != 0):
+                if(obstacle_index != -1):
                     obstacle_list[obstacle_index].finalise()
                 new_obj = True
             currentAngle = currentAngle + angle_increment
@@ -231,8 +231,8 @@ class processor:
                 self.obstacle_list = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
                 
                 bollard_list = self.obstacle_list.filter_bollards()
-
-                print(len(self.obstacle_list.obstacle_list))
+                print("obstacles:",len(self.obstacle_list.obstacle_list), "bollards:", len(bollard_list))
+                
 
                 self.publish_markers(self.obstacle_list)
                 
@@ -244,6 +244,8 @@ class processor:
             self.obstacle_list = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
             bollard_list = self.obstacle_list.filter_bollards()
             self.publish_markers(self.obstacle_list)
+            print("obstacles:",len(self.obstacle_list.obstacle_list), "bollards:", len(bollard_list))
+        
 
 
     def publish_markers(self, obstacle_list):
@@ -252,14 +254,20 @@ class processor:
         for obstacle in obstacle_list.obstacle_list:
             point_list.append(obstacle.to_point())
             if(obstacle.type == 0):
-                color_list.append(ColorRGBA(1.0,0.0,0.0,1.0))
+                #blue is assumed obstacles
+                color_list.append(ColorRGBA(0.0,0.0,1.0,1.0))
             else:
+                #green is assumed bollards
                 color_list.append(ColorRGBA(0.0,1.0,0.0,1.0))
         marker = Marker()
+        marker.header.frame_id = "laser"
         marker.type = 8 #points type
         marker.points = point_list
         marker.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
         marker.colors = color_list
+        marker.scale.x = 0.06
+        marker.scale.y = 0.06
+        marker.scale.z = 1.5
         self.publish_obstacle_visual.publish(marker)
 
 
@@ -287,7 +295,7 @@ class processor:
 
         self.publish_obstacle_visual = rospy.Publisher(
             #published list of markers for rviz
-            'obstacle_list_rviz',
+            'visualization_marker',
             Marker
         )
 
