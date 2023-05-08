@@ -237,6 +237,8 @@ class processor:
 
         self.laserScan = LaserScan
         self.receiving_laser = True
+        #async laser scan update
+
         
     def detect_obstacle(self):
         if not self.receiving_laser:
