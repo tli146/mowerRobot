@@ -19,7 +19,7 @@ from visualization_msgs.msg import  Marker
 testing_mode = False
 
 #ros constants
-ros_rate = 5
+ros_rate = 4
 
 #detected object data
 bollard_diameter = 90/1000 #meter
@@ -52,8 +52,8 @@ class obstacleList:
     def __init__(self, angle_min, angle_max, angle_increment, range_min, range_max, ranges):
         self.location = [0,0]
         currentAngle = angle_min
-        x_last_obj = ranges[0]* -np.sin(currentAngle)
-        y_last_obj = ranges[0]* -np.cos(currentAngle)
+        x_last_obj = ranges[0]* np.cos(currentAngle)
+        y_last_obj = ranges[0]* np.sin(currentAngle)
         x_last = x_last_obj
         y_last = y_last_obj
         new_obj = True
@@ -71,8 +71,8 @@ class obstacleList:
                 #print("laser okay")
                 
 
-                x = laser* -np.sin(currentAngle)
-                y = laser* -np.cos(currentAngle)
+                x = laser* np.cos(currentAngle)
+                y = laser* np.sin(currentAngle)
 
                 #print("x:", x," y: ", y)
 
@@ -232,13 +232,22 @@ class obstacle:
 class processor:
 #class of detected obstacles and bollards
 
+
     def detection_callback(self, LaserScan):
+
+        self.laserScan = LaserScan
+        self.receiving_laser = True
+        
+    def detect_obstacle(self):
+        if not self.receiving_laser:
+            return 
+        LaserScan = self.laserScan
+        
+
         if testing_mode:
-            
             if self.active:
                 print("testing mode")
                 self.active = False
-                self.laserScan = LaserScan
                 self.obstacle_list = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
                 
                 bollard_list = self.obstacle_list.filter_bollards()
@@ -251,7 +260,7 @@ class processor:
             return
         else:
             #synchronous update on receiving new transform information
-            self.laserScan = LaserScan
+            
             self.obstacle_list = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
             bollard_list = self.obstacle_list.filter_bollards()
             self.publish_markers(self.obstacle_list)
@@ -284,6 +293,7 @@ class processor:
 
     def __init__(self):
         self.active = True
+        self.receiving_laser = False
 
         self.sub_laserScan= rospy.Subscriber(
             #subscribe to lidar output
@@ -330,7 +340,7 @@ if __name__ == '__main__':
         
     
     while not rospy.is_shutdown():
-        
+        scan_processor.detect_obstacle()
         rate.sleep()
 
 
