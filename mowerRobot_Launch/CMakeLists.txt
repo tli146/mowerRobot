@@ -4,7 +4,6 @@ project(mowerRobot_Launch)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
-  cartographer_ros
   geometry_msgs
   rospy
   sensor_msgs
@@ -13,4 +12,4 @@ find_package(catkin REQUIRED COMPONENTS
   tf
 )
 
-
+ 

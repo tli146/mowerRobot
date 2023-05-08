@@ -24,12 +24,12 @@ ros_rate = 5
 #detected object data
 bollard_diameter = 90/1000 #meter
 
-diameter_max = bollard_diameter*1.5
+diameter_max = bollard_diameter*10
 diameter_min = bollard_diameter*0.5
 
 obj_link_min_length_wo_distance_adjust = 50/1000 #m
 
-wallLength_max = 0.5 #meter
+wallLength_max = 2 #meter
 
 #safety data
 safety_cone = np.deg2rad(15) #rad
