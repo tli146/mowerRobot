@@ -27,7 +27,7 @@ bollard_diameter = 90/1000 #meter
 diameter_max = bollard_diameter*10
 diameter_min = bollard_diameter*0.5
 
-obj_link_min_length_wo_distance_adjust = 50/1000 #m
+obj_link_min_length_wo_distance_adjust = 30/1000 #m
 
 wallLength_max = 2 #meter
 
@@ -97,13 +97,17 @@ class obstacleList:
 
                     #print("dist to last scan:", dis_from_last, " linear_scaled_obj_min_length:", linear_scaled_obj_min_length)
                     #print("dist to last obj start:", dis_from_last_obj, " wall max length:", wallLength_max )
-                    if(dis_from_last < linear_scaled_obj_min_length and dis_from_last_obj < wallLength_max):
-                        
+                    if dis_from_last < linear_scaled_obj_min_length:
+                        if dis_from_last_obj < wallLength_max:
+                            obstacle_list[obstacle_index].newScan(x, y)
+                        else:
+                            obstacle_list[obstacle_index].toWall()
+                            obstacle_list[obstacle_index].finalise()
+                            obstacle_index = obstacle_index + 1
+                            obstacle_list.append(obstacle(x,y))
+                            obstacle_list[obstacle_index].toWall()
+
                         #print("attaching to previous obj")
-
-                        obstacle_list[obstacle_index].newScan(x, y)
-
-
                     else:
                         
                         #print("new scan not linked to previous obj. Building new obj")
@@ -138,7 +142,8 @@ class obstacleList:
     def filter_bollards(self):
         bollard_list = []
         for obstacle in self.obstacle_list:
-            if obstacle.length < diameter_max and obstacle.length > diameter_min:
+            print(obstacle.length)
+            if obstacle.length < diameter_max and obstacle.length > diameter_min and not obstacle.wall:
                 bollard_list.append(obstacle)
                 obstacle.type = 1
         return bollard_list
@@ -171,7 +176,10 @@ class obstacle:
         self.x = x
         self.y = y
         self.type = 0
-
+        self.wall = False
+    
+    def toWall(self):
+        self.wall =True
 
     def newScan(self, x, y):
         self.size = self.size + 1
