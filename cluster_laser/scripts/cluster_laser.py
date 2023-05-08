@@ -166,6 +166,7 @@ class obstacleList:
 #       |
 #       x
 #
+#angle min = -3.1415927
 
 class obstacle:
     def __init__(self, x , y) -> None:
