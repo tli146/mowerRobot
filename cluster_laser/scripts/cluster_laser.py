@@ -27,7 +27,7 @@ bollard_diameter = 90/1000 #meter
 diameter_max = bollard_diameter*10
 diameter_min = bollard_diameter*0.5
 
-obj_link_min_length_wo_distance_adjust = 30/1000 #m
+obj_link_min_length_wo_distance_adjust = 50/1000 #m
 
 wallLength_max = 2 #meter
 
@@ -52,8 +52,8 @@ class obstacleList:
     def __init__(self, angle_min, angle_max, angle_increment, range_min, range_max, ranges):
         self.location = [0,0]
         currentAngle = angle_min
-        x_last_obj = ranges[0]* np.sin(currentAngle)
-        y_last_obj = ranges[0]* np.cos(currentAngle)
+        x_last_obj = ranges[0]* -np.sin(currentAngle)
+        y_last_obj = ranges[0]* -np.cos(currentAngle)
         x_last = x_last_obj
         y_last = y_last_obj
         new_obj = True
@@ -71,8 +71,8 @@ class obstacleList:
                 #print("laser okay")
                 
 
-                x = laser* np.cos(currentAngle)
-                y = laser* np.sin(currentAngle)
+                x = laser* -np.sin(currentAngle)
+                y = laser* -np.cos(currentAngle)
 
                 #print("x:", x," y: ", y)
 
@@ -105,6 +105,8 @@ class obstacleList:
                             obstacle_list[obstacle_index].finalise()
                             obstacle_index = obstacle_index + 1
                             obstacle_list.append(obstacle(x,y))
+                            x_last_obj = x
+                            y_last_obj = y
                             obstacle_list[obstacle_index].toWall()
 
                         #print("attaching to previous obj")
