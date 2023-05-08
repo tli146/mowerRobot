@@ -3,3 +3,18 @@ to resource ros packages:
     source ~/MowerRobot/devel/setup.bash
 
 
+to ssh to Pi
+
+ssh tlia@ICEcreamPi.local
+
+
+To run program:
+run following command on both machine
+    export ROS_MASTER_URI=http://ICEcreamPi.local:11311
+    
+than on viewer:
+    rosrun rviz rviz -d "/home/tlia/MowerRobot/src/mowerRobot/mowerRobot_Launch/rviz/mower.rviz"
+
+on pi:
+    export ROS_IP=ICEcreamPi.local
+    roslaunch mowerRobot_launch mowerRobot.launch
