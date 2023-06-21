@@ -299,9 +299,18 @@ class processor:
         marker.scale.x = 0.06
         marker.scale.y = 0.06
         marker.scale.z = 1.5
+
+        bollard_cloud = PointCloud()
+        bollard_cloud.header.frame_id = "laser"
+        bollard_cloud.points = bollard_points
+
+        obstacle_cloud = PointCloud()
+        obstacle_cloud.header.frame_id = "laser"
+        obstacle_cloud.points = obstacle_points
+
         self.publish_obstacle_visual.publish(marker)
-        self.publish_bollards.publish(bollard_points)
-        self.publish_obstacles.publish(obstacle_points)
+        self.publish_bollards.publish(bollard_cloud)
+        self.publish_obstacles.publish(obstacle_cloud)
 
     
 
