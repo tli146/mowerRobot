@@ -276,14 +276,20 @@ class processor:
     def publish_markers(self, obstacle_list):
         point_list = []
         color_list = []
+        bollard_points = []
+        obstacle_points = []
         for obstacle in obstacle_list.obstacle_list:
             point_list.append(obstacle.to_point())
             if(obstacle.type == 0):
                 #blue is assumed obstacles
                 color_list.append(ColorRGBA(0.0,0.0,1.0,1.0))
+                obstacle_points.append(obstacle.to_point())
+                
             else:
                 #green is assumed bollards
                 color_list.append(ColorRGBA(0.0,1.0,0.0,1.0))
+                bollard_points.append(obstacle.to_point())
+        
         marker = Marker()
         marker.header.frame_id = "laser"
         marker.type = 8 #points type
@@ -294,6 +300,10 @@ class processor:
         marker.scale.y = 0.06
         marker.scale.z = 1.5
         self.publish_obstacle_visual.publish(marker)
+        self.publish_bollards.publish(bollard_points)
+        self.publish_obstacles.publish(obstacle_points)
+
+    
 
 
     def __init__(self):
