@@ -70,7 +70,7 @@ class obstacle:
     def inMaxBound(self):
         if np.abs(self.x) > midWidth/2:
             return False
-        if np.y > MidRange:
+        if self.y > MidRange:
             return False
         if self.behind:
             return False
@@ -134,7 +134,7 @@ class filter:
 
     def obstacle_callback(self, PointCloud):
         #async
-        print("receiving obstacles")
+       
         self.obstacle_list = []
         for point in PointCloud.points:
             self.obstacle_list.append(obstacle(point.x, point.y))
@@ -143,7 +143,7 @@ class filter:
 
     def bollard_callback(self, PointCloud):
         #async
-        print("receiving bollards")
+
         self.bollard_list = []
         for point in PointCloud.points:
             self.bollard_list.append(obstacle(point.x, point.y))
@@ -218,7 +218,7 @@ class filter:
 
         prior = [0,0, 0, 0]
         next =self.findCenter(immediate_list)
-        print(next)
+        print(next[3])
         self.publish_next(self.next_to_points(next, beyond))
 
 
@@ -253,7 +253,7 @@ class filter:
         marker.type = 8 #points type
         marker.points = points_list
         marker.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
-        marker.color = ColorRGBA(1.0,1.0,1.0,1.0)
+        marker.colors = [ColorRGBA(1.0,1.0,0.5,1.0),ColorRGBA(1.0,1.0,0.0,1.0)]
         marker.scale.x = 0.06
         marker.scale.y = 0.06
         marker.scale.z = 1.5
@@ -283,7 +283,7 @@ if __name__ == '__main__':
         
         if bollard_filter.receiving_bollards and bollard_filter.receiving_obstacles:
             bollard_filter.main_loop()
-            print("looping")
+            
         rate.sleep()
 
 
