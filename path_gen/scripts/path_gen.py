@@ -144,6 +144,12 @@ class filter:
             Float32
         )
 
+        self.publish_filtered = rospy.Publisher(
+            #publishes filtered bollards
+            'filtered',
+            Marker
+        )
+
     def obstacle_callback(self, PointCloud):
         #async
        
@@ -191,6 +197,28 @@ class filter:
         self.bollard_list = closeList    
         return closeList
     
+    def publish_filter_results(self, bollard_list):
+        points = []
+        for bollard in bollard_list:
+            point = Point()
+            point.x = bollard.x
+            point.y = bollard.y
+            point.z = 0
+            points.append(point)
+        marker = Marker()
+        marker.header.frame_id = "laser"
+        marker.type = 8 #points type
+        marker.points = points
+        marker.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
+        marker.colorColorRGBA(1.0,1.0,1.0,1.0)
+        marker.scale.x = 0.06
+        marker.scale.y = 0.06
+        marker.scale.z = 1.5
+        self.publish_filtered.publish(marker)
+        
+
+
+    
     def findCenter(self, list:list) -> list:
         x_sum = 0
         y_sum = 0
@@ -229,7 +257,7 @@ class filter:
             beyond = self.findCenter(beyond_list)
             self.headingAngle = beyond[3]
 
-
+        self.publish_filter_results(immediate_list)
         prior = [0,0, 0, 0]
         next =self.findCenter(immediate_list)
         print(next[3])
