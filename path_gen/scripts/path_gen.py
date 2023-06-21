@@ -288,6 +288,7 @@ class filter:
         point2 = Point()
         point2.x = -np.sin(self.headingAngle)*1.2
         point2.y = np.cos(self.headingAngle)*1.2
+        print(self.headingAngle)
         point2.z = 0
 
         marker1 = Marker()
