@@ -41,12 +41,11 @@ class obstacle:
 #       ^
 #       |
 #       |
-#-y <---R-----> y --->angle_min--->front
+#-y <---R-----> y --->angle 0--->front
 #       |
 #       |
 #       x
 #
-#angle min = -3.1415927
 
     def __init__(self, x , y) -> None:
         self.x = x
@@ -118,7 +117,7 @@ class filter:
 
         self.publish_path = rospy.Publisher(
             #publishes next few points of navigation
-            'next_points',
+            'path',
             PointCloud
         )
 
@@ -265,7 +264,7 @@ class filter:
 
 if __name__ == '__main__':
 
-    rospy.init_node('cluster_laser')
+    rospy.init_node('path_gen')
 
     #set frequency to increase performance
     rate = rospy.Rate(ros_rate)

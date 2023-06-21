@@ -87,6 +87,14 @@ Visualization Manager:
         "": true
       Queue Size: 1000
       Value: true
+      Class: rviz/Marker
+      Enabled: true
+      Marker Topic: path
+      Name: path
+      Namespaces:
+        "": true
+      Queue Size: 1000
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48

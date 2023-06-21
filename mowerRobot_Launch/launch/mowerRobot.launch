@@ -4,6 +4,7 @@
   <include file="$(find rplidar_ros)/launch/rplidar_s2.launch" />
 
   <node name="cluster_laser" pkg="cluster_laser" type="cluster_laser.py" output="screen" />
+  <node name="path_gen" pkg="path_gen" type="path_gen.py" output="screen" />
 
 
 
