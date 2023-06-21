@@ -18,6 +18,8 @@ ros_rate = 5
 
 
 #tuning variables
+MinRange = 0.1
+
 MidRange = 20
 midWidth = 15
 
@@ -26,14 +28,15 @@ closeWidth = 5
 
 detectAngle = 45
 
-biasWeight = 0.5
+biasWeight = 100
+biasWeightFront = biasWeight
 bollardFilterMinDist = 8
 
 robotWidth = 1
 safeStopDistance = 2
 initialHeading = 0
 
-
+angleForward = np.pi/2
 
 class obstacle:
     #location
@@ -63,14 +66,14 @@ class obstacle:
     
     def update_priority_score(self, angle) -> float:
         #lower better
-        priorityScore = self.distance*(1 + biasWeight*np.abs(angle - self.heading))
+        priorityScore = self.distance*(1 + biasWeight*np.abs(angle - self.heading) + biasWeightFront*np.abs(angle - angleForward))
         self.priorityScore = priorityScore
         return priorityScore
     
     def inMaxBound(self):
         if np.abs(self.y) > midWidth/2:
             return False
-        if self.x > MidRange:
+        if np.abs(self.x) > MidRange or np.abs(self.x) < MinRange:
             return False
         if self.behind:
             return False
@@ -210,7 +213,7 @@ class filter:
         marker.type = 8 #points type
         marker.points = points
         marker.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
-        marker.colorColorRGBA(1.0,1.0,1.0,1.0)
+        marker.color = ColorRGBA(1.0,1.0,1.0,1.0)
         marker.scale.x = 0.06
         marker.scale.y = 0.06
         marker.scale.z = 1.5
@@ -238,7 +241,7 @@ class filter:
         for bollard in self.bollard_list:
             bollard.update_priority_score(self.headingAngle)
 
-        self.bollard_list.sort(reverse=True)
+        self.bollard_list.sort()
         immediate_list = []
         beyond = []
         
@@ -316,7 +319,6 @@ class filter:
         point2 = Point()
         point2.x = -np.sin(self.headingAngle)*1.2
         point2.y = np.cos(self.headingAngle)*1.2
-        print(self.headingAngle)
         point2.z = 0
 
         marker1 = Marker()
