@@ -37,27 +37,27 @@ initialHeading = 0
 
 class obstacle:
     #location
-#      -x
+#      -y
 #       ^
 #       |
 #       |
-#-y <---R-----> y --->angle 0--->front
+#-x <---R-----> x --->angle 0--->front
 #       |
 #       |
-#       x
+#       y
 #
 
     def __init__(self, x , y) -> None:
         self.x = x
         self.y = y
         self.distance = np.sqrt(np.square(x) + np.square(y))
-        self.heading = np.arccos(x/self.distance)
-        self.behind = (y>= 0)
+        self.heading = np.arccos(y/self.distance)
+        self.behind = (x>= 0)
         self.priorityScore = -1
     
     def isImmediate(self) -> bool:
-        if np.abs(self.x) < robotWidth:
-            if self.y >0 and self.y < safeStopDistance:
+        if np.abs(self.y) < robotWidth:
+            if self.x >0 and self.x < safeStopDistance:
                 return True
         return False
     
@@ -68,9 +68,9 @@ class obstacle:
         return priorityScore
     
     def inMaxBound(self):
-        if np.abs(self.x) > midWidth/2:
+        if np.abs(self.y) > midWidth/2:
             return False
-        if self.y > MidRange:
+        if self.x > MidRange:
             return False
         if self.behind:
             return False
@@ -200,7 +200,7 @@ class filter:
         x = x_sum/len(list)
         y = y_sum/len(list)
         distance = np.sqrt(np.square(x) + np.square(y))
-        heading = np.arccos(x/distance)
+        heading = np.arccos(y/distance)
         return [x, y, distance, heading]
 
 
@@ -293,8 +293,8 @@ class filter:
         marker1.header.frame_id = "laser"
         marker1.type = 0 #arrow type
         marker1.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
-        marker1.scale.x = 1
-        marker1.scale.y = 1
+        marker1.scale.x = 0.1
+        marker1.scale.y = 0.2
         marker1.scale.z = 0
         marker1.points = [point0, point1]
         marker1.color = ColorRGBA(1.0,1.0,1.0,1.0)
@@ -303,8 +303,8 @@ class filter:
         marker2.header.frame_id = "laser"
         marker2.type = 0 #arrow type
         marker2.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
-        marker2.scale.x = 1
-        marker2.scale.y = 1
+        marker2.scale.x = 0.1
+        marker2.scale.y = 0.2
         marker2.scale.z = 0
         marker2.points = [point0, point2]
         marker2.color = ColorRGBA(1.0,1.0,1.0,1.0)
