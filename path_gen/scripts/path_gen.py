@@ -118,7 +118,7 @@ class filter:
         self.publish_path = rospy.Publisher(
             #publishes next few points of navigation
             'path',
-            PointCloud
+            Marker
         )
 
         self.publish_stop = rospy.Publisher(
