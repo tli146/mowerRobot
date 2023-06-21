@@ -89,7 +89,7 @@ Visualization Manager:
       Queue Size: 1000
       Value: true
       Alpha: 2
-      Class: rviz/Marker
+    - Class: rviz/Marker    
       Enabled: true
       Marker Topic: path
       Name: path
