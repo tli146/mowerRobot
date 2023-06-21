@@ -191,7 +191,6 @@ class filter:
 
 
     def main_loop(self):
-        if
         #filter bollards
         self.filter()
         for bollard in self.bollard_list:

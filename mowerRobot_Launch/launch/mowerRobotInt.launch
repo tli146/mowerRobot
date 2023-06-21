@@ -10,7 +10,7 @@
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mowerRobot_launch)/rviz/mower.rviz" /> 
 
-  
+  <node name="path_gen" pkg="path_gen" type="path_gen.py" output="screen" />
 
   <!-- <node name = "imu" pkg="sparkfun_VR_IMU" type = "serial_uart_rvc_ros.py" /> -->
 

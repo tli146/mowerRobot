@@ -134,6 +134,9 @@ class obstacleList:
             currentAngle = currentAngle + angle_increment
 
         #connect front and back(if connecting)
+        if obstacle_index == -1:
+            return
+            
         if obstacle_list[0].mergeFrom(obstacle_list[obstacle_index]):
             obstacle_index = obstacle_index - 1
             obstacle_list.pop(obstacle_index)
