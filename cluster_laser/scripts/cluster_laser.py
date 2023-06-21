@@ -256,7 +256,7 @@ class processor:
                 self.obstacle_list = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
                 
                 bollard_list = self.obstacle_list.filter_bollards()
-                print("obstacles:",len(self.obstacle_list.obstacle_list), "bollards:", len(bollard_list))
+                #print("obstacles:",len(self.obstacle_list.obstacle_list), "bollards:", len(bollard_list))
                 
 
                 self.publish_markers(self.obstacle_list)
@@ -269,7 +269,7 @@ class processor:
             self.obstacle_list = obstacleList(LaserScan.angle_min, LaserScan.angle_max, LaserScan.angle_increment, LaserScan.range_min, LaserScan.range_max, LaserScan.ranges)
             bollard_list = self.obstacle_list.filter_bollards()
             self.publish_markers(self.obstacle_list)
-            print("obstacles:",len(self.obstacle_list.obstacle_list), "bollards:", len(bollard_list))
+            #print("obstacles:",len(self.obstacle_list.obstacle_list), "bollards:", len(bollard_list))
         
 
 

@@ -134,6 +134,7 @@ class filter:
 
     def obstacle_callback(self, PointCloud):
         #async
+        print("receiving obstacles")
         self.obstacle_list = []
         for point in PointCloud.points:
             self.obstacle_list.append(obstacle(point.x, point.y))
@@ -142,6 +143,7 @@ class filter:
 
     def bollard_callback(self, PointCloud):
         #async
+        print("receiving bollards")
         self.bollard_list = []
         for point in PointCloud.points:
             self.bollard_list.append(obstacle(point.x, point.y))
@@ -216,6 +218,7 @@ class filter:
 
         prior = [0,0, 0, 0]
         next =self.findCenter(immediate_list)
+        print(next)
         self.publish_next(self.next_to_points(next, beyond))
 
 
@@ -277,8 +280,10 @@ if __name__ == '__main__':
 
 
     while not rospy.is_shutdown():
+        
         if bollard_filter.receiving_bollards and bollard_filter.receiving_obstacles:
             bollard_filter.main_loop()
+            print("looping")
         rate.sleep()
 
 
