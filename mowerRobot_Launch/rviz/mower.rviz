@@ -97,6 +97,22 @@ Visualization Manager:
         "": true
       Queue Size: 1000
       Value: true
+    - Class: rviz/Marker    
+      Enabled: true
+      Marker Topic: heading1
+      Name: heading1
+      Namespaces:
+        "": true
+      Queue Size: 1000
+      Value: true
+    - Class: rviz/Marker    
+      Enabled: true
+      Marker Topic: heading2
+      Name: heading2
+      Namespaces:
+        "": true
+      Queue Size: 1000
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48

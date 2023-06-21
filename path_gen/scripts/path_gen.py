@@ -121,6 +121,18 @@ class filter:
             Marker
         )
 
+        self.publish_heading1 = rospy.Publisher(
+            #publishes front of robot
+            'heading1',
+            Marker
+        )
+
+        self.publish_heading2 = rospy.Publisher(
+            #publishes robot desired heading
+            'heading2',
+            Marker
+        )
+
         self.publish_stop = rospy.Publisher(
             #publishes if going to run into obstacle
             'stop',
@@ -260,6 +272,49 @@ class filter:
         marker.scale.y = 0.06
         marker.scale.z = 1.5
         self.publish_path.publish(marker)
+    
+    def publish_headings(self):
+        point0 = Point()
+        point0.x = 0
+        point0.y = 0
+        point0.z = 0
+
+        point1 = Point()
+        point1.x = 0
+        point1.y = 1
+        point1.z = 0
+
+        point2 = Point()
+        point2.x = np.sin(self.headingAngle)*1.5
+        point2.y = np.cos(self.headingAngle)*1.5
+        point2.z = 0
+
+        marker1 = Marker()
+        marker1.header.frame_id = "laser"
+        marker1.type = 0 #arrow type
+        marker1.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
+        marker1.scale.x = 1
+        marker1.scale.y = 1
+        marker1.scale.z = 0
+        marker1.points = [point0, point1]
+        marker1.color = ColorRGBA(1.0,1.0,1.0,1.0)
+
+        marker2 = Marker()
+        marker2.header.frame_id = "laser"
+        marker2.type = 0 #arrow type
+        marker2.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
+        marker2.scale.x = 1
+        marker2.scale.y = 1
+        marker2.scale.z = 0
+        marker2.points = [point0, point2]
+        marker2.color = ColorRGBA(1.0,1.0,1.0,1.0)
+
+        self.publish_heading1.publish(marker1)
+        self.publish_heading2.publish(marker2)
+
+
+
+
 
     
 
@@ -285,6 +340,7 @@ if __name__ == '__main__':
         
         if bollard_filter.receiving_bollards and bollard_filter.receiving_obstacles:
             bollard_filter.main_loop()
+            bollard_filter.publish_headings()
             
         rate.sleep()
 
