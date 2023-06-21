@@ -41,7 +41,7 @@ class obstacle:
 #       ^
 #       |
 #       |
-#-x <---R-----> x --->angle 0--->front
+# y <---R-----> -x --->angle 0--->front
 #       |
 #       |
 #       y
@@ -281,13 +281,13 @@ class filter:
         point0.z = 0
 
         point1 = Point()
-        point1.x = 1
+        point1.x = -1
         point1.y = 0
         point1.z = 0
 
         point2 = Point()
-        point2.x = np.sin(self.headingAngle)*1.2
-        point2.y = -np.cos(self.headingAngle)*1.2
+        point2.x = -np.sin(self.headingAngle)*1.2
+        point2.y = np.cos(self.headingAngle)*1.2
         point2.z = 0
 
         marker1 = Marker()
