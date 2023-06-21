@@ -242,6 +242,7 @@ class filter:
         #find arc of best fit and corresponding radius
         #draw arc on rviz
 
+    
         
     def next_to_points(self, next, beyond):
         points_list = []
@@ -280,13 +281,13 @@ class filter:
         point0.z = 0
 
         point1 = Point()
-        point1.x = 0
-        point1.y = 1
+        point1.x = 1
+        point1.y = 0
         point1.z = 0
 
         point2 = Point()
-        point2.x = np.sin(self.headingAngle)*1.5
-        point2.y = np.cos(self.headingAngle)*1.5
+        point2.x = np.sin(self.headingAngle)*1.2
+        point2.y = -np.cos(self.headingAngle)*1.2
         point2.z = 0
 
         marker1 = Marker()
