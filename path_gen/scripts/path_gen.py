@@ -202,6 +202,7 @@ class filter:
         immediate_list = []
         beyond = []
         
+
         if len(self.bollard_list) <4:
             return False
         if len(self.bollard_list) == 4:
@@ -215,6 +216,7 @@ class filter:
             beyond_list = self.bollard_list[2:]
             beyond = self.findCenter(beyond_list)
             self.headingAngle = beyond[3]
+
 
         prior = [0,0, 0, 0]
         next =self.findCenter(immediate_list)
@@ -249,7 +251,7 @@ class filter:
         #white for path
 
         marker = Marker()
-        marker.header.frame_id = "path"
+        marker.header.frame_id = "laser"
         marker.type = 8 #points type
         marker.points = points_list
         marker.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
