@@ -1,0 +1,12 @@
+L 0.43 -> 
+C 2.07 -> forward
+R 3.95 -> 
+
+turning radius -> 1.5m
+
+//voltage input 
+
+3868 - Right
+536 -Left
+2492 -center
+
