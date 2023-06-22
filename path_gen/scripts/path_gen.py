@@ -21,7 +21,7 @@ ros_rate = 5
 MinRange = 0.1
 
 MidRange = 20
-midWidth = 15
+midWidth = 8
 
 closeRange = 10
 closeWidth = 5
@@ -260,7 +260,7 @@ class filter:
             beyond = self.findCenter(beyond_list)
             self.headingAngle = beyond[3]
 
-        self.publish_filter_results(immediate_list)
+        self.publish_filter_results(self.bollard_list)
         prior = [0,0, 0, 0]
         next =self.findCenter(immediate_list)
         print(next[3])
