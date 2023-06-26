@@ -141,11 +141,6 @@ class filter:
             'stop',
             Bool
         )
-        self.publish_Turn = rospy.Publisher(
-            #publishes if going to run into obstacle
-            'turnRadius',
-            Float32
-        )
 
         self.publish_filtered = rospy.Publisher(
             #publishes filtered bollards
