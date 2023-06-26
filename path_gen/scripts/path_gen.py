@@ -28,8 +28,8 @@ closeWidth = 5
 
 detectAngle = 45
 
-biasWeight = 5
-biasWeightFront = biasWeight
+biasWeight = 1 
+biasWeightFront = biasWeight*2
 bollardFilterMinDist = 8
 
 robotWidth = 1
@@ -44,7 +44,7 @@ class obstacle:
 #       ^
 #       |
 #       |
-# y <---R-----> -x --->angle 0--->front
+# X <---R-----> -x --->angle 0--->front
 #       |
 #       |
 #       y
@@ -241,9 +241,12 @@ class filter:
         beyond = []
         
 
-        if len(self.bollard_list) <4:
+        if len(self.bollard_list) <2:
+            stop = Bool()
+            stop.data = True
+            self.publish_stop.publish(stop)
             return False
-        if len(self.bollard_list) == 4:
+        if len(self.bollard_list) <=4:
             self.headingAngle = 0
             immediate_list = self.bollard_list
             self.no_more_path = True
@@ -259,7 +262,8 @@ class filter:
         prior = [0,0, 0, 0]
         next =self.findCenter(immediate_list)
         #print(next[3])
-        self.publish_next(self.next_to_points(next, beyond))
+
+        self.publish_target(next[0], next[1])
 
 
         #sepperate into front 2, next 2 and others
@@ -269,36 +273,7 @@ class filter:
         #draw arc on rviz
 
     
-        
-    def next_to_points(self, next, beyond):
-        points_list = []
-        point1 = Point()
-        point1.x = next[0]
-        point1.y = next[1]
-        point1.z = 0
-        points_list.append(point1)
-        if beyond == False:
-            return points_list
-        point2 = Point()
-        point2.x = beyond[0]
-        point2.y = beyond[1]
-        point2.z = 0
-        points_list.append(point2)
-        return points_list
     
-    def publish_next(self, points_list):
-        #white for path
-
-        marker = Marker()
-        marker.header.frame_id = "laser"
-        marker.type = 8 #points type
-        marker.points = points_list
-        marker.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
-        marker.colors = [ColorRGBA(1.0,1.0,0.5,1.0),ColorRGBA(1.0,1.0,0.0,1.0)]
-        marker.scale.x = 0.06
-        marker.scale.y = 0.06
-        marker.scale.z = 1.5
-        self.publish_path.publish(marker)
     
     def publish_headings(self):
         point0 = Point()
@@ -339,9 +314,27 @@ class filter:
         self.publish_heading1.publish(marker1)
         self.publish_heading2.publish(marker2)
 
+    def publish_target(self, x, y):
+        point0 = Point()
+        point0.x = 0
+        point0.y = 0
+        point0.z = 0
 
+        point1 = Point()
+        point1.x = x
+        point1.y = y
+        point1.z = 0
 
-
+        marker1 = Marker()
+        marker1.header.frame_id = "laser"
+        marker1.type = 0 #arrow type
+        marker1.pose = Pose(Point(0,0,0), Quaternion(0,0,0,1))
+        marker1.scale.x = 0.1
+        marker1.scale.y = 0.2
+        marker1.scale.z = 0
+        marker1.points = [point0, point1]
+        marker1.color = ColorRGBA(1.0,1.0,1.0,1.0)
+        self.publish_path.publish(marker1)
 
     
 
