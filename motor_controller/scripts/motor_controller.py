@@ -41,7 +41,7 @@ class motor_controller:
         
         self.sub_heading= rospy.Subscriber(
             #subscribe to cluster output
-            "heading2",
+            "path",
             Marker,
             self.heading_callback       
         )
@@ -70,17 +70,19 @@ class motor_controller:
         print(x)
 
 
-    def motor_value(self, theta):
+    def motor_value_calc(self, theta):
         if np.abs(theta) > max_wheel_angle*1.2:
             return -1
         if np.abs(theta) < 0.1:
             return sensor_forward
         if theta> 0:
+            #right turn
             motor_value = theta * (sensor_right-sensor_forward)/max_wheel_angle + sensor_forward
-            return motor_value
+            return int(motor_value)
         if theta< 0:
+            #left turn
             motor_value = theta * (sensor_forward - sensor_left)/max_wheel_angle + sensor_forward
-            return motor_value
+            return int(motor_value)
 
     
     def heading_callback(self, marker):
@@ -91,8 +93,10 @@ class motor_controller:
         dist2 = np.square(x)+np.square(y)
         curv = 2*y/dist2
         theta = np.arctan(wb*curv)
-        motor_value = motor_value(theta)
 
+        
+        motor_value = self.motor_value_calc(theta)
+        print(motor_value)
         curv_msg = Float32()
         curv_msg.data = curv
         self.publish_curv.publish(curv_msg)
@@ -108,8 +112,9 @@ class motor_controller:
 
         
 
-    def set_motor(motor_value):
-        p.run(["jrk2cmd", "--target", motor_value])
+    def set_motor(self, motor_value):
+        
+        p.run(["jrk2cmd", "--target", str(motor_value)])
 
 
 
@@ -119,7 +124,7 @@ class motor_controller:
 if __name__ == '__main__':
 
     rospy.init_node('motor_controller')
-
+    motor_controller = motor_controller()
     #set frequency to increase performance
     rate = rospy.Rate(ros_rate)
     

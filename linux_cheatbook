@@ -18,3 +18,7 @@ than on viewer:
 on pi:
     export ROS_IP=ICEcreamPi.local
     roslaunch mowerRobot_launch mowerRobot.launch
+
+
+other short code
+source devel/setup.bash
