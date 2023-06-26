@@ -263,7 +263,7 @@ class filter:
         self.publish_filter_results(self.bollard_list)
         prior = [0,0, 0, 0]
         next =self.findCenter(immediate_list)
-        print(next[3])
+        #print(next[3])
         self.publish_next(self.next_to_points(next, beyond))
 
 
