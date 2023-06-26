@@ -25,10 +25,10 @@ ros_rate = 4
 bollard_diameter = 90/1000 #meter
 
 diameter_max = bollard_diameter*10
-diameter_min = bollard_diameter*0.5
+diameter_min = bollard_diameter*0.2
 
-neighbor_min = 0.2 #for bollard sepperation
-neighbor_max = 1.5 #if bollard within this range of any neighbor, than not a bollard for path generation 
+neighbor_min = 0.1 #for bollard sepperation
+neighbor_max = 0.5 #if bollard within this range of any neighbor, than not a bollard for path generation 
 
 obj_link_min_length_wo_distance_adjust = 50/1000 #m
 
@@ -156,19 +156,20 @@ class obstacleList:
                 bollard_list.append(obstacle)
                 
         #size filter
-        filter = False
         newBollard_list = []
 
 
         #filter for neighbors
         for bollard in bollard_list:
+            filter = False
             for bollard2 in bollard_list:
-                if not filter:
+                if not filter and bollard is not bollard2 :
                     dist = np.sqrt(np.square(bollard.x -bollard2.x) + np.square(bollard.y-bollard2.y)) 
                     if dist < neighbor_max and dist > neighbor_min:
                         filter = True
 
             if not filter:
+            
                 newBollard_list.append(bollard)
                 bollard.type = 1
 
