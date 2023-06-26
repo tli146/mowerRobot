@@ -52,8 +52,8 @@ class obstacleList:
     def __init__(self, angle_min, angle_max, angle_increment, range_min, range_max, ranges):
         self.location = [0,0]
         currentAngle = angle_min
-        x_last_obj = ranges[0]* np.cos(currentAngle)
-        y_last_obj = ranges[0]* np.sin(currentAngle)
+        x_last_obj = ranges[0]* np.sin(currentAngle)
+        y_last_obj = ranges[0]* np.cos(currentAngle)
         x_last = x_last_obj
         y_last = y_last_obj
         new_obj = True
@@ -151,6 +151,14 @@ class obstacleList:
             if obstacle.length < diameter_max and obstacle.length > diameter_min and not obstacle.wall:
                 bollard_list.append(obstacle)
                 obstacle.type = 1
+        #size filter
+        filter = False
+        for bollard in bollard_list:
+            if not filter:
+                for bollard2 in bollard_list:
+                    dist_x = bollard.x
+
+        
         return bollard_list
     
 
