@@ -27,6 +27,9 @@ bollard_diameter = 90/1000 #meter
 diameter_max = bollard_diameter*10
 diameter_min = bollard_diameter*0.5
 
+neighbor_min = 0.2 #for bollard sepperation
+neighbor_max = 1.5 #if bollard within this range of any neighbor, than not a bollard for path generation 
+
 obj_link_min_length_wo_distance_adjust = 50/1000 #m
 
 wallLength_max = 2 #meter
@@ -145,6 +148,7 @@ class obstacleList:
 
 
     def filter_bollards(self):
+        #filter size
         bollard_list = []
         for obstacle in self.obstacle_list:
             #print(obstacle.length)
@@ -153,13 +157,23 @@ class obstacleList:
                 obstacle.type = 1
         #size filter
         filter = False
+        newBollard_list = []
+
+
+        #filter for neighbors
         for bollard in bollard_list:
+            for bollard2 in bollard_list:
+                if not filter:
+                    dist = np.sqrt(np.square(bollard.x -bollard2.x) + np.square(bollard.y-bollard2.y)) 
+                    if dist < neighbor_max and dist > neighbor_min:
+                        filter = True
+
             if not filter:
-                for bollard2 in bollard_list:
-                    dist_x = bollard.x
+                newBollard_list.append(bollard)
+
 
         
-        return bollard_list
+        return newBollard_list
     
 
 

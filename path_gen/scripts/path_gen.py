@@ -28,7 +28,7 @@ closeWidth = 5
 
 detectAngle = 45
 
-biasWeight = 100
+biasWeight = 5
 biasWeightFront = biasWeight
 bollardFilterMinDist = 8
 
@@ -312,8 +312,8 @@ class filter:
         point0.z = 0
 
         point1 = Point()
-        point1.x = 0
-        point1.y = 1
+        point1.x = -1
+        point1.y = 0
         point1.z = 0
 
         point2 = Point()
