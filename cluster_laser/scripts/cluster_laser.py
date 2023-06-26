@@ -154,7 +154,7 @@ class obstacleList:
             #print(obstacle.length)
             if obstacle.length < diameter_max and obstacle.length > diameter_min and not obstacle.wall:
                 bollard_list.append(obstacle)
-                obstacle.type = 1
+                
         #size filter
         filter = False
         newBollard_list = []
@@ -170,7 +170,7 @@ class obstacleList:
 
             if not filter:
                 newBollard_list.append(bollard)
-
+                bollard.type = 1
 
         
         return newBollard_list
